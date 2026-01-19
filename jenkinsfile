@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Copy Files to Git Repo') {
+            steps {
+                sh '''
+                git config --global user.email "sahilninawe302@gmail.com"
+                git config --global user.name "Sahil"
+                git add .
+                git commit -m "Auto commit from Jenkins" || echo "No changes"
+                git push origin main
+                '''
+            }
+        }
+
+        stage('Clone Repo from Git') {
+            steps {
+                git branch: 'main',
+                    url: 'https://github.com/Samsann/Wipro_Practice'
+            }
+        }
+
+        stage('Deploy to Nginx HTML Folder') {
+            steps {
+                sh '''
+                cp -r * /var/www/html/
+                '''
+                // For Windows use:
+                // bat 'xcopy /E /I /Y * C:\\nginx\\html\\'
+            }
+        }
+    }
+}
